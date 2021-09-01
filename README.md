@@ -8,8 +8,8 @@ On this project I used the following technology tools:
 * VirtualBox
 * Ansible
 * Kubernetes 1.21
-** Calico CNI
-** MetalLB LoadBalancer
+  * Calico CNI
+  * MetalLB LoadBalancer
 * Docker
 * Python
 * Grafana
