@@ -35,4 +35,4 @@ After the master and the workers are up, a Second Phase will be run on the Maste
 * Deploy a Consumer Pod
 
 # License 📄
-Project License type: GPL-3.0 License - Check LICENSE file for more details.
+Project License type: GPL-3.0 License - Check [LICENSE](LICENSE) file for more details.
