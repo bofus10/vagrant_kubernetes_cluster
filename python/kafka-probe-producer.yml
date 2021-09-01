@@ -1,0 +1,24 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-probe-producer
+  labels:
+    app: kafka-probe-producer
+  namespace: kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-probe-producer
+  template:
+    metadata:
+      labels:
+        app: kafka-probe-producer 
+    spec:
+     containers:
+     - name: kafka-probe-app
+       image: kafka-probe-app
+       imagePullPolicy: IfNotPresent
+       command: ["/bin/sh"]
+       args: ["-c", "python3.8 /app/kafka-probe.py producer"]    

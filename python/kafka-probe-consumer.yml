@@ -1,0 +1,24 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-probe-consumer
+  labels:
+    app: kafka-probe-consumer
+  namespace: kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-probe-consumer
+  template:
+    metadata:
+      labels:
+        app: kafka-probe-consumer 
+    spec:
+     containers:
+     - name: kafka-probe-app
+       image: kafka-probe-app
+       imagePullPolicy: IfNotPresent
+       command: ["/bin/sh"]
+       args: ["-c", "python3.8 /app/kafka-probe.py consumer"]    

@@ -1,0 +1,142 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+   - name: install libselinux
+     yum:
+       name: libselinux-python
+       state: present
+       update_cache: true
+   
+   - name: disable SELinux
+     command: setenforce 0
+
+   - name: disable SELinux on reboot
+     selinux:
+       state: disabled
+
+   - name: Stop and Disable Firewalld
+     service:
+       name: firewalld
+       state: stopped
+       enabled: no
+   
+   - name: Ensure br_netfilter is enabled.
+     modprobe:
+      name: br_netfilter
+      state: present 
+
+   - name: ensure net.bridge.bridge-nf-call-ip6tables is set to 1
+     sysctl:
+      name: net.bridge.bridge-nf-call-ip6tables
+      value: 1
+      state: present
+
+   - name: ensure net.bridge.bridge-nf-call-iptables is set to 1
+     sysctl:
+      name: net.bridge.bridge-nf-call-iptables
+      value: 1
+      state: present
+   
+   - name: ensure net.ipv4.ip_forward is set to 1
+     sysctl:
+      name: net.ipv4.ip_forward
+      value: 1
+      state: present
+
+   # K8s requirement swapoff
+   - name: Remove swapfile from /etc/fstab
+     mount:
+       name: "{{ item }}"
+       fstype: swap
+       state: absent
+     with_items:
+      - swap
+      - none
+
+   - name: Disable swap
+     command: swapoff -a
+     when: ansible_swaptotal_mb > 0
+
+   - name: install Docker
+     yum:
+       name: docker
+       state: present
+       update_cache: true
+
+   - name: start Docker
+     service:
+       name: docker
+       state: started
+       enabled: yes
+
+   - name: Create group
+     group:
+      name: docker
+      state: present
+
+   - name: Add vagrant user to docker group
+     user:
+      name: vagrant
+      group: docker
+
+   - name: add Kubernetes' YUM repository
+     yum_repository:
+      name: Kubernetes
+      description: Kubernetes YUM repository
+      baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+      gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+      gpgcheck: yes
+
+   
+   - name: Install K8s Components
+     yum:
+      state: present
+      update_cache: true
+      allow_downgrade: yes
+      name:
+      - kubelet-1.21.0
+      - kubeadm-1.21.0
+      - kubectl-1.21.0
+      
+   - name: start kubelet
+     service:
+       name: kubelet
+       enabled: yes
+       state: started   
+
+   - name: Configure node-ip {{ node_ip }} at kubelet
+     lineinfile:
+       path: '/usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf' #Fix location
+       line: '\1 --node-ip={{ node_ip }}"'
+       regexp: '(Environment="KUBELET_CONFIG_ARGS=.*)"'
+       backrefs: yes
+     notify: restart kubelet     
+
+   - name: Add k8s Master to /etc/hosts
+     lineinfile:
+      path: /etc/hosts
+      line: "{{ item }}"
+      insertafter: EOF
+     with_items:
+      - '{{ network }}.10 {{ hostname }}.example.com {{ hostname }}'
+
+   - name: Add Nodes to /etc/hosts
+     lineinfile:
+       path: /etc/hosts
+       line: '{{ network }}.{{ 10|default(0)|int + item|int }} node-{{ item|int }}.example.com node-{{ item|int }}'
+       insertafter: EOF
+     loop: "{{ query('sequence', 'start=1 end='+(n_nodes)|string)|list }}"
+
+   - name: Join the node to cluster
+     command: sh /vagrant/join-command
+
+  handlers:
+    - name: docker status
+      service: name=docker state=started
+
+    - name: restart kubelet
+      service:
+       name: kubelet
+       state: restarted
+       daemon_reload: yes

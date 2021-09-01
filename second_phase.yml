@@ -1,0 +1,67 @@
+---
+  - name: "Locally deploying Second Phase"
+    hosts: localhost
+    vars:
+       lnetwork: "{{ network }}"
+    connection: local 
+    tasks:
+
+    - name: Build Kafka Image Zookeeper|Broker
+      become: true
+      command: docker build --tag kafka-prome:latest /vagrant/kafka/ 
+
+    - name: Build Consumer and Producer
+      become: true
+      command: docker build --tag kafka-probe-app:latest /vagrant/python/ 
+
+    - name: Create Kafka Namespace
+      command: kubectl apply -f /vagrant/kafka/kafka_ns.yml 
+   
+    - name: Deploy Kafka
+      command: kubectl apply -f /vagrant/kafka/kafka.yml
+
+    - name: Deploy Prometheus and Grafana Step 1
+      command: kubectl apply -f /vagrant/grafana/yamls/setup
+
+    - name: Deploy Prometheus and Grafana Step 2
+      command: kubectl apply -f /vagrant/grafana/yamls/
+  
+    - name: Deploy Grafana Service on LB IP
+      become: false
+      shell: |
+        cat <<EOF | kubectl create -f -
+        ---
+        apiVersion: v1
+        kind: Service
+        metadata:
+          labels:
+            app.kubernetes.io/component: grafana
+            app.kubernetes.io/name: grafana
+            app.kubernetes.io/part-of: kube-prometheus
+            app.kubernetes.io/version: 8.1.2
+          name: grafana
+          namespace: monitoring
+        spec:
+          ports:
+          - name: http
+            port: 3000
+            targetPort: http
+          selector:
+            app.kubernetes.io/component: grafana
+            app.kubernetes.io/name: grafana
+            app.kubernetes.io/part-of: kube-prometheus
+          type: LoadBalancer
+          loadBalancerIP: {{ lnetwork }}.241
+        EOF
+
+    - name: Deploy Producer
+      command: kubectl apply -f /vagrant/python/kafka-probe-producer.yml   
+
+    - name: Deploy Consumer
+      command: kubectl apply -f /vagrant/python/kafka-probe-consumer.yml  
+
+    - name: Delete Cron entry
+      cron: 
+        name: "Second Phase"
+        user: "vagrant"
+        state: absent
