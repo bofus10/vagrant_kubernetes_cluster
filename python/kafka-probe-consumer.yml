@@ -19,6 +19,6 @@ spec:
      containers:
      - name: kafka-probe-app
        image: k8s-master:5000/kafka-probe-app
-       imagePullPolicy: Never
+       imagePullPolicy: IfNotPresent
        command: ["/bin/sh"]
        args: ["-c", "python3.8 /app/kafka-probe.py consumer"]    

@@ -88,11 +88,12 @@
    - name: append {{ hostname }} local registry
      set_fact:
         imported_var: "{{ imported_var | default([]) | combine({ 'insecure-registries': ['{{ hostname }}:5000'] }) }}"
-
+     
    - name: write var to /etc/docker/daemon.json
      copy:
         content: "{{ imported_var | to_nice_json }}"
         dest: /etc/docker/daemon.json
+     notify: restart docker for registry update
 
    - name: add Kubernetes' YUM repository
      yum_repository:
@@ -154,3 +155,8 @@
        name: kubelet
        state: restarted
        daemon_reload: yes
+
+    - name: restart docker for registry update
+      service:
+       name: docker
+       state: restarted

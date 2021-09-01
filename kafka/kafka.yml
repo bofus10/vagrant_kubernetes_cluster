@@ -149,7 +149,7 @@ items:
           - name: KAFKA_CREATE_TOPICS
             value: input:1:1,output:1:1
           image: k8s-master:5000/kafka-prome:latest
-          imagePullPolicy: Never
+          imagePullPolicy: IfNotPresent
           name: kafka-prome
           ports:
           - containerPort: 9092
