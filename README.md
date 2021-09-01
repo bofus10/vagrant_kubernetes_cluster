@@ -10,10 +10,14 @@ On this project I used the following technology tools:
 * Kubernetes 1.22
 * Docker
 * Python
+* Grafana
+* Prometheus
+* Kafka
 
 ## Setup 🔧
 * Install Vagrant and VirtualBox
 * Install Vagrant vbguest Plugin for VirtualBox: _vagrant plugin install vagrant-vbguest_
+
 On the Vagrant file you will can specify the Network you k8s cluster will run on and the Number of workers to create.
 
 ## Usage 📋
@@ -29,3 +33,6 @@ After the master and the workers are up, a Second Phase will be run on the Maste
 * Set grafana LoadBalancer Service on $NETWORK.241 (by default 170.10.10.241:3000)
 * Deploy a Producer Pod 
 * Deploy a Consumer Pod
+
+# License 📄
+Project License type: GPL-3.0 License - Check LICENSE file for more details.
