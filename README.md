@@ -39,8 +39,10 @@ After the master and the workers are up, a Second Phase will be run on the Maste
 * Deploy a Producer Pod 
 * Deploy a Consumer Pod
 
-Once all is deployed, you can access Grafana monitoring webpage via 170.10.10.241:300
+Once all is deployed, you can access Grafana monitoring webpage via 170.10.10.241:3000
+
 User/Pass is default admin/admin
+
 Under Dashboards -> Manage -> Default there are some Dashboards reporting metrics of Pods, Cluster, etc
   * -> Kubernetes / Compute Resources / Cluster
   * -> Kubernetes / Compute Resources / Namespace (Pods)
