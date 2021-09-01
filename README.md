@@ -11,6 +11,7 @@ On this project I used the following technology tools:
   * Calico CNI
   * MetalLB LoadBalancer
 * Docker
+  * Docker-Distribution
 * Python
 * Grafana
 * Prometheus
