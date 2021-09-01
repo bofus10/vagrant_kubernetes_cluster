@@ -28,6 +28,7 @@
   
     - name: Deploy Grafana Service on LB IP
       become: false
+      ignore_errors: true
       shell: |
         cat <<EOF | kubectl create -f -
         ---

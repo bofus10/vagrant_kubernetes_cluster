@@ -149,7 +149,7 @@ items:
           - name: KAFKA_CREATE_TOPICS
             value: input:1:1,output:1:1
           image: kafka-prome
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Never
           name: kafka-prome
           ports:
           - containerPort: 9092
