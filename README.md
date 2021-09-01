@@ -15,6 +15,7 @@ On this project I used the following technology tools:
 * Grafana
 * Prometheus
 * Kafka
+  * Kafkacat Pod for testing purposes
 
 ## Setup 🔧
 * Install Vagrant and VirtualBox
