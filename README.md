@@ -22,7 +22,7 @@ On this project I used the following technology tools:
 * Install Vagrant and VirtualBox
 * Install Vagrant vbguest Plugin for VirtualBox: _vagrant plugin install vagrant-vbguest_
 
-On the Vagrant file you will can specify the Network you k8s cluster will run on and the Number of workers to create.
+On the Vagrant file you will specify the Network you k8s cluster will run on and the Number of workers to create.
 
 ## Usage 📋
 * Clone the Repository

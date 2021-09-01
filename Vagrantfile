@@ -18,11 +18,10 @@ Vagrant.configure("2") do |config|
         vb.cpus = 2
     end
 
-    config.push.define "local-exec" do |run|
-        run.inline = <<-SCRIPT
-          rm .\nodes .\join-command
-        SCRIPT
-    end
+    config.trigger.before :up do |trigger|
+        trigger.name = "Doing some Cleaning if necessary"
+        trigger.run = {inline: $test}
+      end
 
     # Setup of K8s Master node
     config.vm.define "k8s-master" do |master|
@@ -68,3 +67,10 @@ Vagrant.configure("2") do |config|
     end
    
 end
+
+$test = <<-SHELL
+hostname
+rm join-command 
+rm nodes
+rm graf 
+SHELL
