@@ -7,7 +7,9 @@ On this project I used the following technology tools:
 * Vagrant
 * VirtualBox
 * Ansible
-* Kubernetes 1.22
+* Kubernetes 1.21
+** Calico CNI
+** MetalLB LoadBalancer
 * Docker
 * Python
 * Grafana
