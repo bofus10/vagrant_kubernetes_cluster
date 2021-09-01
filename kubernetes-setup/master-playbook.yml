@@ -61,11 +61,13 @@
      command: swapoff -a
      when: ansible_swaptotal_mb > 0
 
-   - name: install Docker
+   - name: install Docker and Registry
      yum:
-       name: docker
        state: present
        update_cache: true
+       name: 
+         - docker
+         - docker-distribution
 
    - name: start Docker
      service:
@@ -73,6 +75,12 @@
        state: started
        enabled: yes
 
+   - name: start Docker Registry
+     service:
+       name: docker-distribution
+       state: started
+       enabled: yes
+ 
    - name: Create group
      group:
       name: docker
@@ -82,6 +90,20 @@
      user:
       name: vagrant
       group: docker
+
+   - name: Load vars from /etc/docker/daemon.json
+     include_vars:
+        file: /etc/docker/daemon.json
+        name: imported_var
+
+   - name: append {{ hostname }} local registry
+     set_fact:
+        imported_var: "{{ imported_var | default([]) | combine({ 'insecure-registries': ['{{ hostname }}:5000'] }) }}"
+
+   - name: write var to /etc/docker/daemon.json
+     copy:
+        content: "{{ imported_var | to_nice_json }}"
+        dest: /etc/docker/daemon.json
 
    - name: add Kubernetes' YUM repository
      yum_repository:

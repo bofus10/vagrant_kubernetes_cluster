@@ -8,11 +8,19 @@
 
     - name: Build Kafka Image Zookeeper|Broker
       become: true
-      command: docker build --tag kafka-prome:latest /vagrant/kafka/ 
+      command: docker build --tag "{{ ansible_hostname }}":5000/kafka-prome:latest /vagrant/kafka/ 
+
+    - name: Push kafka-prome Image to local Registry
+      become: true
+      command: docker push "{{ ansible_hostname }}":5000/kafka-prome:latest  
 
     - name: Build Consumer and Producer
       become: true
-      command: docker build --tag kafka-probe-app:latest /vagrant/python/ 
+      command: docker build --tag "{{ ansible_hostname }}":5000/kafka-probe-app:latest /vagrant/python/ 
+
+    - name: Push consumer|prducer Image to local Registry
+      become: true
+      command: docker push "{{ ansible_hostname }}":5000/kafka-probe-app:latest  
 
     - name: Create Kafka Namespace
       command: kubectl apply -f /vagrant/kafka/kafka_ns.yml 
