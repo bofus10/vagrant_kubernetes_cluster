@@ -209,7 +209,7 @@
        name: "Second Phase"
        user: "vagrant"
        minute: "*/5"
-       job: "[ -f /vagrant/nodes ] && [ $(wc -l /vagrant/nodes | awk '{print $1}') -eq \"{{ n_nodes }}\" ] && /usr/bin/ansible-playbook /vagrant/second_phase.yml --extra-vars \"network={{ network }}\" >/vagrant/graf 2>&1"
+       job: "[[ $(pgrep ansible) == '' ]] && [ -f /vagrant/nodes ] && [ $(wc -l /vagrant/nodes | awk '{print $1}') -eq \"{{ n_nodes }}\" ] && /usr/bin/ansible-playbook /vagrant/second_phase.yml --extra-vars \"network={{ network }}\" >/vagrant/graf 2>&1"
 
    - name: Taint nodes
      become: false
