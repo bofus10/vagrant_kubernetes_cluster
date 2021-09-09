@@ -21,7 +21,8 @@ On this project I used the following technology tools:
 ## Setup 🔧
 * Clone the Repository
 * Install Vagrant and VirtualBox
-* Install Vagrant vbguest Plugin for VirtualBox: _vagrant plugin install vagrant-vbguest_
+* Install Vagrant vbguest Plugin for VirtualBox:~~  _vagrant plugin install vagrant-vbguest_ ~~
+  * Vagrant will ask to install version 0.30.0 if not present on first run
 
 On the Vagrant file you will specify the Network you k8s cluster will run on and the Number of workers to create.
 
