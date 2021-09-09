@@ -34,7 +34,7 @@
     - name: Deploy Prometheus and Grafana Step 2
       command: kubectl apply -f /vagrant/grafana/yamls/
   
-    - name: Deploy Grafana Service on LB IP
+    - name: Deploy Grafana Service on LB IP {{ lnetwork }}.241
       become: false
       ignore_errors: true
       shell: |

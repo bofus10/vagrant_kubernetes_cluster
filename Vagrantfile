@@ -11,8 +11,13 @@ NETWORK = "170.10.10"
 
 Vagrant.configure("2") do |config|
     config.ssh.insert_key = false
+    #VBox shared folder definition
     config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
-    
+    #VBguest plugin install if not present
+    config.vagrant.plugins = {"vagrant-vbguest" => {"version" => "0.30.0"}}
+    #From VBGuest >0.22 allow_kernel_upgrade is needed
+    config.vbguest.installer_options = { allow_kernel_upgrade: true }
+
     config.vm.provider "virtualbox" do |vb|
         vb.memory = 4096
         vb.cpus = 4
