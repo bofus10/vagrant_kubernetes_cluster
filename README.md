@@ -1,6 +1,7 @@
-# Challange
+# Kubernetes Cluster Deployment + kafka | grafana | prometheus
 
-Following code is to present to Evolution team 
+Following code is intented as test practice, code will deploy a kubernetes cluster (master|worker nodes) using vagrant and virtualbox. 
+Optionally will deploy kafka, grafana, prometheus
 
 ## Technologies used 🛠️
 On this project I used the following technology tools:
@@ -23,6 +24,7 @@ On this project I used the following technology tools:
 * Install Vagrant and VirtualBox
 * Install Vagrant vbguest Plugin for VirtualBox:~~vagrant plugin install vagrant-vbguest~~
   * Vagrant will ask to install version 0.30.0 if not present on first run
+* If you dont want all the second phase deployments that include grafana, kafka and prometheus, remove the second_phase.yml from the pwd.
 
 On the Vagrant file you will specify the Network you k8s cluster will run on and the Number of workers to create.
 
